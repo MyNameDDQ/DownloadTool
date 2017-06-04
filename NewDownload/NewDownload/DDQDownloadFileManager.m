@@ -16,8 +16,6 @@ typedef NS_ENUM(NSUInteger, ManagerOperationType) {
 
 @interface DDQDownloadFileManager ()
 
-@property (nonatomic, strong) NSFileManager *fileManager;
-
 @end
 
 @implementation DDQDownloadFileManager
@@ -129,12 +127,10 @@ static DDQDownloadFileManager *manager = nil;
         switch (type) {
                 
             case kGetFileName:{
-                
                 content = url.lastPathComponent;
             }break;
                 
             case kGetFilePath:{
-                
                 content = downloadTaskDic[url.lastPathComponent];
             }break;
                 
@@ -151,12 +147,10 @@ static DDQDownloadFileManager *manager = nil;
         switch (type) {
                 
             case kGetFileName:{
-                
                 content = taskSavePath.lastPathComponent;
             }break;
                 
             case kGetFilePath:{
-                
                 content = taskSavePath;
             }break;
                 
@@ -189,6 +183,20 @@ static DDQDownloadFileManager *manager = nil;
     }
     
     return 0;
+}
+
+- (BOOL)file_deleteTaskFileWithUrl:(NSString *)url {
+
+    NSString *path = [self file_getTaskFilePathWithUrl:url];
+    
+    //查看文件是否存在
+    BOOL isOk = NO;
+    if ([fileManager fileExistsAtPath:path]) {
+        
+        isOk = [fileManager removeItemAtPath:path error:nil];
+        return isOk;
+    }
+    return isOk;
 }
 
 @end

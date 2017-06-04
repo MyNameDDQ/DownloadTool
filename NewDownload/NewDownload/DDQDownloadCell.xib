@@ -60,6 +60,7 @@
             <connections>
                 <outlet property="rateLabel" destination="tys-EX-9rl" id="ZoY-2d-0RC"/>
                 <outlet property="scheduleProgress" destination="CF0-lT-t2P" id="LIA-h4-1jH"/>
+                <outlet property="startButton" destination="bhk-a5-fau" id="Fka-Nq-x2Z"/>
             </connections>
             <point key="canvasLocation" x="-44" y="-273"/>
         </tableViewCell>

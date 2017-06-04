@@ -15,6 +15,7 @@
 @property (strong, nonatomic) DDQDownloadManager *downloadManager;
 @property (weak, nonatomic) IBOutlet UIProgressView *scheduleProgress;
 @property (weak, nonatomic) IBOutlet UILabel *rateLabel;
+@property (weak, nonatomic) IBOutlet UIButton *startButton;
 @end
 
 @implementation DDQDownloadCell
@@ -35,6 +36,11 @@
     float schedule = [self.downloadManager manager_downloadTaskRateWithURL:cell_taskUrl];
     [self.scheduleProgress setProgress:schedule animated:YES];
     self.rateLabel.text = [NSString stringWithFormat:@"%.f%%", schedule * 100.0];
+    
+    if (schedule == 1.0) {
+        
+        [self.startButton setTitle:@"完成" forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark - Cell Operation
@@ -75,8 +81,13 @@
 
 - (IBAction)cell_taskDelete:(UIButton *)sender {
     
-    
-    
+    if ([self.fileManager file_deleteTaskFileWithUrl:self.cell_taskUrl]) {
+        
+        self.rateLabel.text = @"0%";
+        [self.scheduleProgress setProgress:0.0 animated:NO];
+        [self.startButton setTitle:@"开始" forState:UIControlStateNormal];
+        [self.downloadManager manager_handleTaskWithState:kManagerCancel URL:self.cell_taskUrl];
+    }
 }
 
 @end

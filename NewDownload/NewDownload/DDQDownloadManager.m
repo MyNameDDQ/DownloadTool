@@ -164,7 +164,7 @@ static NSMutableDictionary *managerTaskDic = nil;
             
         case kManagerCancel:{
             [dataTask cancel];
-            operation.download_state(kDownloadCancel);
+//            operation.download_state(kDownloadCancel);
         }break;
             
         default:
@@ -228,14 +228,10 @@ static NSMutableDictionary *managerTaskDic = nil;
     
     if (!operation) return;
     
-    if ([self manager_downloadTaskCompletedWithURL:operation.download_address]) {
+    //下载完成并且没有错误
+    if ([self manager_downloadTaskCompletedWithURL:operation.download_address] && !error) {
         // 下载完成
         operation.download_state(kDownloadCompleted);
-    }
-        
-    if (error){
-        // 下载失败
-        operation.download_state(kDownloadFailed);
     }
     
     // 关闭流
@@ -245,9 +241,12 @@ static NSMutableDictionary *managerTaskDic = nil;
     // 清除任务
     [managerTaskDic removeObjectForKey:operation.download_address.lastPathComponent];
     
-    if (error) {
+    if (error){
         
-        if (self.downloadError) {
+        // 下载失败
+        operation.download_state(kDownloadFailed);
+        
+        if (self.downloadError) {//错误回调不为空
             
             self.downloadError(error);
         }
