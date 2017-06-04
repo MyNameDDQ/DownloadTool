@@ -251,6 +251,8 @@ static NSMutableDictionary *managerTaskDic = nil;
             self.downloadError(error);
         }
     }
+    
+    operation = nil;
 }
 
 @end
