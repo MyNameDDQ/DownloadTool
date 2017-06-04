@@ -14,6 +14,7 @@ typedef NS_ENUM(NSUInteger, DDQDownloadStates) {
     kDownloadSupsend,
     kDownloadCompleted,
     kDownloadFailed,
+    kDownloadCancel,
 };
 
 typedef void(^DDQDownloadSchedule)(NSUInteger receivedSize, NSUInteger expectedSize, float schedule);

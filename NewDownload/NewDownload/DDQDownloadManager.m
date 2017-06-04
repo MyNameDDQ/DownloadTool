@@ -29,7 +29,7 @@ static NSMutableDictionary *managerTaskDic = nil;
 
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        manager = [[self class] init];
+        manager = [[self alloc] init];
     });
     return manager;
 }
@@ -78,11 +78,25 @@ static NSMutableDictionary *managerTaskDic = nil;
     //下载地址不为空，且不为NSNull，@""
     if (!url || [url isKindOfClass:[NSNull class]] || [url isEqualToString:@""]) return;
     
-    BOOL taskOK = [self manager_downloadTaskCompletedWithURL:url];
-    
     //这个任务存在并且下载完成
+    BOOL taskOK = [self manager_downloadTaskCompletedWithURL:url];
     if (taskOK) return;
+    
+    //当前是否有这个下载任务
+    if ([managerTaskDic.allKeys containsObject:url.lastPathComponent]) {
         
+        DDQDownloadOperation *operation = managerTaskDic[url.lastPathComponent];
+        NSURLSessionDataTask *dataTask = operation.download_task;
+        //根据当前任务状态做出判断
+        if (dataTask.state == NSURLSessionTaskStateRunning) {
+            
+            [self manager_handleTaskWithState:kManagerSupsend URL:url]; return;
+        } else if (dataTask.state == NSURLSessionTaskStateSuspended) {
+            
+            [self manager_handleTaskWithState:kManagerStart URL:url]; return;
+        }
+    }
+    
     self.downloadFileManager.taskUrl = url;
     
     //创建流
@@ -122,7 +136,7 @@ static NSMutableDictionary *managerTaskDic = nil;
     NSUInteger currentLength = [self.downloadFileManager file_getTaskFileSizeWithUrl:url];//已下载量
     
     //总下载量和当前下载量比对
-    if (totalLength == currentLength) {
+    if (totalLength == currentLength && (totalLength > 0 && currentLength > 0)) {
         
         return YES;
     } else {
@@ -140,19 +154,32 @@ static NSMutableDictionary *managerTaskDic = nil;
             
         case kManagerStart:{
             [dataTask resume];
+            operation.download_state(kDownloadStart);
         }break;
             
         case kManagerSupsend:{
             [dataTask suspend];
+            operation.download_state(kDownloadSupsend);
         }break;
             
         case kManagerCancel:{
             [dataTask cancel];
+            operation.download_state(kDownloadCancel);
         }break;
             
         default:
             break;
     }
+}
+
+- (float)manager_downloadTaskRateWithURL:(NSString *)url {
+
+    NSUInteger totalLength = [self manager_downloadTaskTotalSizeWithURL:url];//总下载量
+    NSUInteger currentLength = [self.downloadFileManager file_getTaskFileSizeWithUrl:url];//已下载量
+    
+    //分子分母不为零
+    if (totalLength == 0 || currentLength == 0) return 0.f;
+    return 1.0 * currentLength / totalLength;
 }
 
 #pragma mark - Session Delgate
@@ -204,7 +231,6 @@ static NSMutableDictionary *managerTaskDic = nil;
     if ([self manager_downloadTaskCompletedWithURL:operation.download_address]) {
         // 下载完成
         operation.download_state(kDownloadCompleted);
-        
     }
         
     if (error){

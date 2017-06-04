@@ -58,4 +58,12 @@ typedef void(^DDQDownloadError)(NSError *error);
  */
 - (BOOL)manager_downloadTaskCompletedWithURL:(NSString *)url;
 
+/**
+ 这个任务下载的完成比例
+
+ @param url 任务的URL
+ @return 完成的百分比
+ */
+- (float)manager_downloadTaskRateWithURL:(NSString *)url;
+
 @end
