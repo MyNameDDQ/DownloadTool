@@ -55,6 +55,13 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qti-Qn-kuc">
+                        <rect key="frame" x="268" y="-1" width="31" height="30"/>
+                        <state key="normal" title="预览"/>
+                        <connections>
+                            <action selector="cell_taskPreview:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="TXR-9z-Jq9"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Gob-P3-Jj3" firstAttribute="trailing" secondItem="CF0-lT-t2P" secondAttribute="trailing" id="2S1-6C-AEX"/>
@@ -64,10 +71,12 @@
                     <constraint firstItem="bhk-a5-fau" firstAttribute="leading" secondItem="CF0-lT-t2P" secondAttribute="trailing" constant="10" id="Eqr-9F-DbS"/>
                     <constraint firstItem="tys-EX-9rl" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Gi3-Jv-TLq"/>
                     <constraint firstItem="CF0-lT-t2P" firstAttribute="leading" secondItem="tys-EX-9rl" secondAttribute="trailing" constant="10" id="Quo-LS-fFp"/>
+                    <constraint firstItem="bhk-a5-fau" firstAttribute="top" secondItem="qti-Qn-kuc" secondAttribute="bottom" constant="5" id="RLe-cf-qev"/>
                     <constraint firstItem="Gob-P3-Jj3" firstAttribute="centerY" secondItem="giH-Wt-bsO" secondAttribute="centerY" id="T13-hX-YqN"/>
                     <constraint firstItem="f6v-PN-Knh" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="b5R-9F-3dk"/>
                     <constraint firstItem="giH-Wt-bsO" firstAttribute="top" secondItem="tys-EX-9rl" secondAttribute="bottom" constant="10" id="eBB-I0-Spd"/>
                     <constraint firstItem="bhk-a5-fau" firstAttribute="centerY" secondItem="f6v-PN-Knh" secondAttribute="centerY" id="eQB-te-SjI"/>
+                    <constraint firstItem="qti-Qn-kuc" firstAttribute="leading" secondItem="bhk-a5-fau" secondAttribute="leading" id="eiF-eJ-s0k"/>
                     <constraint firstAttribute="trailing" secondItem="f6v-PN-Knh" secondAttribute="trailing" constant="15" id="fQB-lv-tBP"/>
                     <constraint firstItem="f6v-PN-Knh" firstAttribute="leading" secondItem="bhk-a5-fau" secondAttribute="trailing" constant="30" id="jtP-kp-i9Y"/>
                 </constraints>
@@ -75,12 +84,13 @@
             <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="completedLabel" destination="giH-Wt-bsO" id="myA-IW-0Sl"/>
+                <outlet property="previewButton" destination="qti-Qn-kuc" id="fJ1-AV-v3P"/>
                 <outlet property="rateLabel" destination="tys-EX-9rl" id="ZoY-2d-0RC"/>
                 <outlet property="scheduleProgress" destination="CF0-lT-t2P" id="LIA-h4-1jH"/>
                 <outlet property="speedLabel" destination="Gob-P3-Jj3" id="uj7-yC-lpc"/>
                 <outlet property="startButton" destination="bhk-a5-fau" id="Fka-Nq-x2Z"/>
             </connections>
-            <point key="canvasLocation" x="-48.5" y="-264"/>
+            <point key="canvasLocation" x="-155" y="-430"/>
         </tableViewCell>
     </objects>
 </document>

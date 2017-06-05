@@ -66,7 +66,6 @@ static NSMutableDictionary *managerTaskDic = nil;
     return  [dataDic[DDQFileManagerTaskSizeKey] longValue];
 }
 
-
 /**
  url转当前任务
 

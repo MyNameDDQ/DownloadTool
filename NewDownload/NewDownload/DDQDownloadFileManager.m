@@ -47,8 +47,8 @@ typedef NS_ENUM(NSUInteger, ManagerOperationType) {
     } 
 }
 
-static NSString *downloadSavePath = nil;
-static NSString *downloadDataPath = nil;
+static NSString *downloadSavePath = nil;//文件保存文件
+static NSString *downloadDataPath = nil;//下载的数据plist
 static NSMutableDictionary *downloadTaskDic = nil;
 static NSFileManager *fileManager = nil;
 

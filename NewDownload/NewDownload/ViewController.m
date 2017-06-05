@@ -17,7 +17,7 @@
 #define kThirdVideoUrl @"http://app.qixingshidai.com/Public/Uploads/gh/2017-05-05/590c2f922b110.pdf"
 #define kFourthVideoUrl @"http://app.qixingshidai.com/Public/Uploads/gh/2017-05-05/590c2ec7e6740.pdf"
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource, DDQDownloadCellDelegate, UIDocumentInteractionControllerDelegate>
 
 @property (nonatomic, strong) NSArray *vc_sourceArray;
 
@@ -50,6 +50,7 @@ NSString *const identifier = @"VCCellID";
 
     DDQDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     
+    cell.delegate = self;
     cell.cell_taskUrl = self.vc_sourceArray[indexPath.row];
     return cell;
 }
@@ -57,6 +58,20 @@ NSString *const identifier = @"VCCellID";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     return 100.0;
+}
+
+#pragma mark - Custom Delegate
+- (void)cell_selectedPreviewPDFWithCell:(DDQDownloadCell *)cell {
+
+    NSURL *previewURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", cell.cell_taskLocalPath]];
+    UIDocumentInteractionController *documentView = [UIDocumentInteractionController interactionControllerWithURL:previewURL];
+    documentView.delegate = self;
+    [documentView presentPreviewAnimated:YES];
+}
+
+- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
+
+    return self;
 }
 
 @end

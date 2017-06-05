@@ -9,6 +9,7 @@
 #import "DDQDownloadCell.h"
 #import "DDQDownloadFileManager.h"
 #import "DDQDownloadManager.h"
+#import <objc/runtime.h>
 @interface DDQDownloadCell ()
 
 @property (nonatomic, strong) DDQDownloadFileManager *fileManager;
@@ -18,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *startButton;
 @property (weak, nonatomic) IBOutlet UILabel *speedLabel;
 @property (weak, nonatomic) IBOutlet UILabel *completedLabel;
+@property (weak, nonatomic) IBOutlet UIButton *previewButton;
 @end
 
 @implementation DDQDownloadCell
@@ -27,7 +29,8 @@
     [super awakeFromNib];
     // Initialization code
     self.fileManager = [DDQDownloadFileManager defaultFileManager];
-    self.downloadManager = [[DDQDownloadManager alloc] init];
+    self.downloadManager = [DDQDownloadManager downloadManager];
+    self.previewButton.hidden = YES;
 }
 
 - (void)setCell_taskUrl:(NSString *)cell_taskUrl {
@@ -38,10 +41,21 @@
     [self.scheduleProgress setProgress:schedule animated:YES];
     self.rateLabel.text = [NSString stringWithFormat:@"%.f%%", schedule * 100.0];
     
-    if (schedule == 1.0) {
+    if (schedule == 1.0) {//下载比1，则下载完成
         
         [self.startButton setTitle:@"完成" forState:UIControlStateNormal];
     }
+    
+    //下载的文件类型为PDF，且下载完成
+    if ([cell_taskUrl.pathExtension isEqualToString:@"pdf"] && schedule == 1.0) {
+        
+        self.previewButton.hidden = NO;
+    }
+}
+
+- (NSString *)cell_taskLocalPath {
+
+    return [self.fileManager file_getTaskFilePathWithUrl:self.cell_taskUrl];
 }
 
 #pragma mark - Cell Operation
@@ -74,7 +88,7 @@
             expectedStr = [NSString stringWithFormat:@"%.2fM", (expectedSize / 1024.0) / 1024.0];
         } else {
         
-            expectedStr = [NSString stringWithFormat:@"%.2fG", (expectedSize / 1024.0) / 1024.0 / 1024.0];
+            expectedStr = [NSString stringWithFormat:@"%.2fG", 1.0 * expectedSize / GBSize];
         }
         
         NSString *receviedStr = nil;
@@ -84,7 +98,7 @@
             receviedStr = [NSString stringWithFormat:@"%.2fM", (receivedSize / 1024.0) / 1024.0];
         } else {//这表示下载量大于1G
         
-            receviedStr = [NSString stringWithFormat:@"%.2fG", (receivedSize / 1024.0) / 1024.0 / 1024.0];
+            receviedStr = [NSString stringWithFormat:@"%.2fG", 1.0 * receivedSize / GBSize];
         }
         
         self.completedLabel.text = [NSString stringWithFormat:@"%@/%@", receviedStr, expectedStr];
@@ -101,15 +115,16 @@
         NSLog(@"%@", downloadError);
     }];
     
+    //监视下载速度
     [self.downloadManager manager_downloadSpeedWithURL:self.cell_taskUrl Speed:^(float speed) {
         
-        NSLog(@"%f", speed);
         self.speedLabel.text = [NSString stringWithFormat:@"%.1fM/s", speed];
     }];
 }
 
 - (IBAction)cell_taskDelete:(UIButton *)sender {
     
+    //删除之间还是得判断文件是否存在
     if ([self.fileManager file_deleteTaskFileWithUrl:self.cell_taskUrl]) {
         
         self.rateLabel.text = @"0%";
@@ -117,7 +132,39 @@
         [self.startButton setTitle:@"开始" forState:UIControlStateNormal];
         [self.startButton setSelected:NO];
         [self.downloadManager manager_handleTaskWithState:kManagerCancel URL:self.cell_taskUrl];
+        
+        //下载的是PDF
+        if (self.cell_type == kDownloadTypePDF) {
+            
+            self.previewButton.hidden = YES;
+        }
     }
+}
+
+- (IBAction)cell_taskPreview:(UIButton *)sender {
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cell_selectedPreviewPDFWithCell:)]) {
+        
+        [self.delegate cell_selectedPreviewPDFWithCell:self];
+    }
+}
+
+@end
+
+@implementation DDQDownloadCell (DDQDownloadCelltType)
+
+@dynamic cell_type;
+
+const char *typeKey = "com.ddq.cellType";
+
+- (void)setCell_type:(DownloadCellType)cell_type {
+
+    objc_setAssociatedObject(self, typeKey, @(cell_type), OBJC_ASSOCIATION_RETAIN);
+}
+
+- (DownloadCellType)cell_type {
+
+    return [objc_getAssociatedObject(self, typeKey) unsignedLongValue];
 }
 
 @end

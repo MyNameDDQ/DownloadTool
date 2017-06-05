@@ -18,6 +18,7 @@
 		9D023E321EE1022500DE57D3 /* DDQDownloadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D023E301EE1022500DE57D3 /* DDQDownloadCell.m */; };
 		9D023E331EE1022500DE57D3 /* DDQDownloadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D023E311EE1022500DE57D3 /* DDQDownloadCell.xib */; };
 		9D023E391EE1071600DE57D3 /* DDQDownloadFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D023E381EE1071600DE57D3 /* DDQDownloadFileManager.m */; };
+		9D2371AD1EE5318C0057E0A1 /* DownloadPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D2371AC1EE5318C0057E0A1 /* DownloadPreviewController.m */; };
 		9DF7F3EE1EE1651F005C2BBF /* DDQDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DF7F3ED1EE1651F005C2BBF /* DDQDownloadManager.m */; };
 		9DF7F3F11EE1664B005C2BBF /* DDQDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DF7F3F01EE1664B005C2BBF /* DDQDownloadOperation.m */; };
 /* End PBXBuildFile section */
@@ -61,6 +62,8 @@
 		9D023E311EE1022500DE57D3 /* DDQDownloadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DDQDownloadCell.xib; sourceTree = "<group>"; };
 		9D023E371EE1071600DE57D3 /* DDQDownloadFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDQDownloadFileManager.h; sourceTree = "<group>"; };
 		9D023E381EE1071600DE57D3 /* DDQDownloadFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDQDownloadFileManager.m; sourceTree = "<group>"; };
+		9D2371AB1EE5318C0057E0A1 /* DownloadPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadPreviewController.h; sourceTree = "<group>"; };
+		9D2371AC1EE5318C0057E0A1 /* DownloadPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadPreviewController.m; sourceTree = "<group>"; };
 		9DF7F3EC1EE1651F005C2BBF /* DDQDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDQDownloadManager.h; sourceTree = "<group>"; };
 		9DF7F3ED1EE1651F005C2BBF /* DDQDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDQDownloadManager.m; sourceTree = "<group>"; };
 		9DF7F3EF1EE1664B005C2BBF /* DDQDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDQDownloadOperation.h; sourceTree = "<group>"; };
@@ -128,6 +131,8 @@
 				9DF7F3ED1EE1651F005C2BBF /* DDQDownloadManager.m */,
 				9DF7F3EF1EE1664B005C2BBF /* DDQDownloadOperation.h */,
 				9DF7F3F01EE1664B005C2BBF /* DDQDownloadOperation.m */,
+				9D2371AB1EE5318C0057E0A1 /* DownloadPreviewController.h */,
+				9D2371AC1EE5318C0057E0A1 /* DownloadPreviewController.m */,
 				9D023E051EE1011500DE57D3 /* Main.storyboard */,
 				9D023E081EE1011500DE57D3 /* Assets.xcassets */,
 				9D023E0A1EE1011500DE57D3 /* LaunchScreen.storyboard */,
@@ -304,6 +309,7 @@
 				9D023E041EE1011500DE57D3 /* ViewController.m in Sources */,
 				9DF7F3EE1EE1651F005C2BBF /* DDQDownloadManager.m in Sources */,
 				9D023E321EE1022500DE57D3 /* DDQDownloadCell.m in Sources */,
+				9D2371AD1EE5318C0057E0A1 /* DownloadPreviewController.m in Sources */,
 				9D023E011EE1011500DE57D3 /* AppDelegate.m in Sources */,
 				9D023DFE1EE1011500DE57D3 /* main.m in Sources */,
 				9D023E391EE1071600DE57D3 /* DDQDownloadFileManager.m in Sources */,
