@@ -44,11 +44,22 @@ typedef NS_ENUM(NSUInteger, ManagerOperationType) {
         
         dataDic = [NSMutableDictionary dictionary];
         [dataDic writeToFile:downloadDataPath atomically:YES];
-    } 
+    }
+    
+    //任务的一些网络数据
+    downloadNamePath = [NSString stringWithFormat:@"%@/DownloadTaskName.plist", cachePath];
+    NSMutableDictionary *nameDic = [NSMutableDictionary dictionaryWithContentsOfFile:downloadNamePath];
+    //读取的plist文件不为空
+    if (!nameDic) {
+        
+        nameDic = [NSMutableDictionary dictionary];
+        [nameDic writeToFile:downloadNamePath atomically:YES];
+    }
 }
 
 static NSString *downloadSavePath = nil;//文件保存文件
 static NSString *downloadDataPath = nil;//下载的数据plist
+static NSString *downloadNamePath = nil;//文件展示给用户看的时候显示正确的名字
 static NSMutableDictionary *downloadTaskDic = nil;
 static NSFileManager *fileManager = nil;
 
@@ -99,6 +110,10 @@ static DDQDownloadFileManager *manager = nil;
     return downloadDataPath;
 }
 
+- (NSString *)taskNamePlistPath {
+    
+    return downloadNamePath;
+}
 /**
  根据Task url拼接文件保存路径
 

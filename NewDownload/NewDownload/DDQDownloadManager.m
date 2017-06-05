@@ -162,11 +162,13 @@ static NSMutableDictionary *managerTaskDic = nil;
         case kManagerStart:{
             [dataTask resume];
             operation.download_state(kDownloadStart);
+            dispatch_resume(self.timer_t);
         }break;
             
         case kManagerSupsend:{
             [dataTask suspend];
             operation.download_state(kDownloadSupsend);
+            dispatch_suspend(self.timer_t);
         }break;
             
         case kManagerCancel:{

@@ -51,11 +51,42 @@
         
         self.previewButton.hidden = NO;
     }
+    
+    //监视下载速度
+    [self.downloadManager manager_downloadSpeedWithURL:self.cell_taskUrl Speed:^(float speed) {
+        
+        self.speedLabel.text = [NSString stringWithFormat:@"%.1fM/s", speed];
+    }];
+}
+
+- (void)setCell_name:(NSString *)cell_name {
+
+    //建立名称关系
+    NSMutableDictionary *nameDic = [NSMutableDictionary dictionaryWithContentsOfFile:self.fileManager.taskNamePlistPath];
+    //记录已存在就不记录了
+    if (![nameDic.allKeys containsObject:self.cell_taskUrl.lastPathComponent]) {
+        
+        [nameDic setValue:cell_name forKey:self.cell_taskUrl.lastPathComponent];
+        [nameDic writeToFile:self.fileManager.taskNamePlistPath atomically:YES];
+    }
 }
 
 - (NSString *)cell_taskLocalPath {
 
-    return [self.fileManager file_getTaskFilePathWithUrl:self.cell_taskUrl];
+    return [NSString stringWithFormat:@"file://%@", [self.fileManager file_getTaskFilePathWithUrl:self.cell_taskUrl]];
+}
+
+- (NSString *)cell_taskLocalName {
+
+    NSMutableDictionary *nameDic = [NSMutableDictionary dictionaryWithContentsOfFile:self.fileManager.taskNamePlistPath];
+    //记录存在就读取记录
+    if ([nameDic.allKeys containsObject:self.cell_taskUrl.lastPathComponent]) {
+        
+        return nameDic[self.cell_taskUrl.lastPathComponent];
+    } else {
+    
+        return @"七星时代";
+    }
 }
 
 #pragma mark - Cell Operation
@@ -108,6 +139,12 @@
         if (state == kDownloadCompleted) {
             
             [sender setTitle:@"完成" forState:UIControlStateNormal];
+            
+            //下载的是PDF
+            if (self.cell_type == kDownloadTypePDF) {
+                
+                self.previewButton.hidden = NO;
+            }
         }
         
     } Failure:^(NSError *downloadError) {
@@ -115,11 +152,6 @@
         NSLog(@"%@", downloadError);
     }];
     
-    //监视下载速度
-    [self.downloadManager manager_downloadSpeedWithURL:self.cell_taskUrl Speed:^(float speed) {
-        
-        self.speedLabel.text = [NSString stringWithFormat:@"%.1fM/s", speed];
-    }];
 }
 
 - (IBAction)cell_taskDelete:(UIButton *)sender {
@@ -132,6 +164,7 @@
         [self.startButton setTitle:@"开始" forState:UIControlStateNormal];
         [self.startButton setSelected:NO];
         [self.downloadManager manager_handleTaskWithState:kManagerCancel URL:self.cell_taskUrl];
+        self.speedLabel.text = @"0M/S";
         
         //下载的是PDF
         if (self.cell_type == kDownloadTypePDF) {
@@ -164,7 +197,14 @@ const char *typeKey = "com.ddq.cellType";
 
 - (DownloadCellType)cell_type {
 
-    return [objc_getAssociatedObject(self, typeKey) unsignedLongValue];
+    NSNumber *number = objc_getAssociatedObject(self, typeKey);
+    if (!number) {
+        
+        return kDownloadTypeVideo;
+    } else {
+    
+        return [number unsignedLongValue];
+    }
 }
 
 @end

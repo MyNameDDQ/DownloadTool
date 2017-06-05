@@ -52,6 +52,11 @@ NSString *const identifier = @"VCCellID";
     
     cell.delegate = self;
     cell.cell_taskUrl = self.vc_sourceArray[indexPath.row];
+    if (indexPath.row > 1) {
+        
+        cell.cell_name = @(arc4random()%100).stringValue;
+        cell.cell_type = kDownloadTypePDF;
+    }
     return cell;
 }
 
@@ -63,9 +68,10 @@ NSString *const identifier = @"VCCellID";
 #pragma mark - Custom Delegate
 - (void)cell_selectedPreviewPDFWithCell:(DDQDownloadCell *)cell {
 
-    NSURL *previewURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", cell.cell_taskLocalPath]];
+    NSURL *previewURL = [NSURL URLWithString:cell.cell_taskLocalPath];
     UIDocumentInteractionController *documentView = [UIDocumentInteractionController interactionControllerWithURL:previewURL];
     documentView.delegate = self;
+    documentView.name = cell.cell_taskLocalName;
     [documentView presentPreviewAnimated:YES];
 }
 

@@ -27,11 +27,15 @@ typedef NSString *DDQFileManagerDataKey;
  */
 @property (nonatomic, strong) NSString *taskUrl;
 
-
 /**
  任务一些数据的保存
  */
 @property (nonatomic, strong, readonly) NSString *taskDataPlistPath;
+
+/**
+ 任务名字对应表
+ */
+@property (nonatomic, strong, readonly) NSString *taskNamePlistPath;
 
 /**
  获取文件的保存名字

@@ -14,7 +14,10 @@
 
 @property (nonatomic, copy) NSString *cell_taskUrl;
 @property (nonatomic, weak) id <DDQDownloadCellDelegate> delegate;
+@property (nonatomic, copy) NSString *cell_name;
+
 @property (nonatomic, strong, readonly) NSString *cell_taskLocalPath;
+@property (nonatomic, strong, readonly) NSString *cell_taskLocalName;
 
 @end
 
@@ -34,6 +37,6 @@ typedef NS_ENUM(NSUInteger, DownloadCellType) {
 
 @interface DDQDownloadCell (DDQDownloadCelltType)
 
-@property (nonatomic, assign) DownloadCellType cell_type;
+@property (nonatomic, assign) DownloadCellType cell_type;//default Video
 
 @end
