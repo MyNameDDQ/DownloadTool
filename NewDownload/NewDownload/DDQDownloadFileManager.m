@@ -67,20 +67,20 @@ static DDQDownloadFileManager *manager = nil;
     return manager;
 }
 
-- (instancetype)init {
-
-    self = [super init];
-    if (self) {
-     
-        //程序将要被kill
-        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillTerminateNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-            
-            
-        }];
-        return self;
-    }
-    return nil;
-}
+//- (instancetype)init {
+//
+//    self = [super init];
+//    if (self) {
+//     
+//        //程序将要被kill
+//        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillTerminateNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+//            
+//            
+//        }];
+//        return self;
+//    }
+//    return nil;
+//}
 
 - (void)setTaskUrl:(NSString *)taskUrl {
 
@@ -194,6 +194,14 @@ static DDQDownloadFileManager *manager = nil;
     if ([fileManager fileExistsAtPath:path]) {
         
         isOk = [fileManager removeItemAtPath:path error:nil];
+        
+        NSMutableDictionary *dataDic = [NSMutableDictionary dictionaryWithContentsOfFile:downloadDataPath];
+        
+        if ([dataDic.allKeys containsObject:url.lastPathComponent]) {
+            
+            [dataDic removeObjectForKey:url.lastPathComponent];
+            [dataDic writeToFile:downloadDataPath atomically:YES];
+        }
         return isOk;
     }
     return isOk;

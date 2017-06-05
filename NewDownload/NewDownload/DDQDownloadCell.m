@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UIProgressView *scheduleProgress;
 @property (weak, nonatomic) IBOutlet UILabel *rateLabel;
 @property (weak, nonatomic) IBOutlet UIButton *startButton;
+@property (weak, nonatomic) IBOutlet UILabel *speedLabel;
+@property (weak, nonatomic) IBOutlet UILabel *completedLabel;
 @end
 
 @implementation DDQDownloadCell
@@ -25,8 +27,7 @@
     [super awakeFromNib];
     // Initialization code
     self.fileManager = [DDQDownloadFileManager defaultFileManager];
-    self.downloadManager = [DDQDownloadManager defaultManager];
-    
+    self.downloadManager = [[DDQDownloadManager alloc] init];
 }
 
 - (void)setCell_taskUrl:(NSString *)cell_taskUrl {
@@ -60,22 +61,50 @@
         [sender setSelected:NO];
     }
     
+    NSUInteger GBSize = 1024 * 1024 * 1024;
     [self.downloadManager manager_downloadWithURL:self.cell_taskUrl Schedule:^(NSUInteger receivedSize, NSUInteger expectedSize, float schedule) {
         
         [self.scheduleProgress setProgress:schedule animated:YES];
         self.rateLabel.text = [NSString stringWithFormat:@"%.f%%", schedule * 100.0];
         
+        //判断这个下载的进度是否大于1GB
+        NSString *expectedStr = nil;
+        if (expectedSize < GBSize) {
+            
+            expectedStr = [NSString stringWithFormat:@"%.2fM", (expectedSize / 1024.0) / 1024.0];
+        } else {
+        
+            expectedStr = [NSString stringWithFormat:@"%.2fG", (expectedSize / 1024.0) / 1024.0 / 1024.0];
+        }
+        
+        NSString *receviedStr = nil;
+        //下载的单位显示
+        if (receivedSize < GBSize) {//这表示下载量小于1G
+            
+            receviedStr = [NSString stringWithFormat:@"%.2fM", (receivedSize / 1024.0) / 1024.0];
+        } else {//这表示下载量大于1G
+        
+            receviedStr = [NSString stringWithFormat:@"%.2fG", (receivedSize / 1024.0) / 1024.0 / 1024.0];
+        }
+        
+        self.completedLabel.text = [NSString stringWithFormat:@"%@/%@", receviedStr, expectedStr];
+
     } State:^(DDQDownloadStates state) {
         
         if (state == kDownloadCompleted) {
             
             [sender setTitle:@"完成" forState:UIControlStateNormal];
-            [sender setEnabled:NO];
         }
         
     } Failure:^(NSError *downloadError) {
         
         NSLog(@"%@", downloadError);
+    }];
+    
+    [self.downloadManager manager_downloadSpeedWithURL:self.cell_taskUrl Speed:^(float speed) {
+        
+        NSLog(@"%f", speed);
+        self.speedLabel.text = [NSString stringWithFormat:@"%.1fM/s", speed];
     }];
 }
 
@@ -86,6 +115,7 @@
         self.rateLabel.text = @"0%";
         [self.scheduleProgress setProgress:0.0 animated:NO];
         [self.startButton setTitle:@"开始" forState:UIControlStateNormal];
+        [self.startButton setSelected:NO];
         [self.downloadManager manager_handleTaskWithState:kManagerCancel URL:self.cell_taskUrl];
     }
 }

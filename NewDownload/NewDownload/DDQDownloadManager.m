@@ -12,12 +12,13 @@
 
 @property (nonatomic, strong) DDQDownloadFileManager *downloadFileManager;
 @property (nonatomic, copy) DDQDownloadError downloadError;
+@property (nonatomic, copy) DDQDownloadSpeed downloadSpeed;
+@property (nonatomic, strong) dispatch_source_t timer_t;
 
 @end
 
 @implementation DDQDownloadManager
 
-static DDQDownloadManager *manager = nil;
 static NSMutableDictionary *managerTaskDic = nil;
 
 + (void)load {
@@ -25,13 +26,19 @@ static NSMutableDictionary *managerTaskDic = nil;
     managerTaskDic = [NSMutableDictionary dictionary];
 }
 
-+ (instancetype)defaultManager {
+//static DDQDownloadManager *manager = nil;
+//+ (instancetype)defaultManager {
+//
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        manager = [[self alloc] init];
+//    });
+//    return manager;
+//}
 
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        manager = [[self alloc] init];
-    });
-    return manager;
++ (instancetype)downloadManager {
+
+    return [[self alloc] init];
 }
 
 - (instancetype)init {
@@ -40,6 +47,7 @@ static NSMutableDictionary *managerTaskDic = nil;
     if (self) {
         
         self.downloadFileManager = [DDQDownloadFileManager defaultFileManager];
+        self.timer_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
         return self;
     }
     return nil;
@@ -73,7 +81,7 @@ static NSMutableDictionary *managerTaskDic = nil;
 }
 
 #pragma mark - API IMP
-- (void)manager_downloadWithURL:(NSString *)url Schedule:(void (^)(NSUInteger, NSUInteger, float))schedule State:(void (^)(DDQDownloadStates))state Failure:(void (^)(NSError *))failure {
+- (void)manager_downloadWithURL:(NSString *)url Schedule:(DDQDownloadSchedule)schedule State:(void (^)(DDQDownloadStates))state Failure:(void (^)(NSError *))failure {
 
     //下载地址不为空，且不为NSNull，@""
     if (!url || [url isKindOfClass:[NSNull class]] || [url isEqualToString:@""]) return;
@@ -182,6 +190,24 @@ static NSMutableDictionary *managerTaskDic = nil;
     return 1.0 * currentLength / totalLength;
 }
 
+- (void)manager_downloadSpeedWithURL:(NSString *)url Speed:(void (^)(float))speed {
+
+    __block NSUInteger lowLength = [self.downloadFileManager file_getTaskFileSizeWithUrl:url];//已下载量
+
+    //没1秒读取新的文件打下，再与上一次记录的大小取差值
+    dispatch_source_set_timer(self.timer_t, DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC, 0.0 * NSEC_PER_SEC);
+    dispatch_source_set_event_handler(self.timer_t, ^{
+        
+        NSUInteger currentLength = [self.downloadFileManager file_getTaskFileSizeWithUrl:url];//已下载量
+        
+        if (!speed) return;//这个回调得不为空
+        speed((currentLength - lowLength) / 1024.0 / 1024.0);
+        
+        lowLength = currentLength;
+    });
+    dispatch_resume(self.timer_t);
+}
+
 #pragma mark - Session Delgate
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
@@ -203,6 +229,7 @@ static NSMutableDictionary *managerTaskDic = nil;
     completionHandler(NSURLSessionResponseAllow);
 }
 
+
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
     
     DDQDownloadOperation *operation = [self manager_getURLLastPathComponent:dataTask.currentRequest.URL];
@@ -214,7 +241,7 @@ static NSMutableDictionary *managerTaskDic = nil;
     NSUInteger received = [self.downloadFileManager file_getTaskFileSizeWithUrl:operation.download_address];
     NSUInteger expected = operation.total_length;
     float schedule = 1.0 * received / expected;
-    
+
     //进度回调
     if (operation.download_schedule) {
         
@@ -253,6 +280,12 @@ static NSMutableDictionary *managerTaskDic = nil;
     }
     
     operation = nil;
+    dispatch_suspend(self.timer_t);
+}
+
+- (void)dealloc {
+
+    dispatch_cancel(self.timer_t);
 }
 
 @end

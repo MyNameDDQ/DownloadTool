@@ -19,7 +19,7 @@ typedef NS_ENUM(NSUInteger, DDQDownloadManagerStates) {
 };
 
 typedef void(^DDQDownloadError)(NSError *error);
-
+typedef void(^DDQDownloadSpeed)(float speed);
 /**
  下载器
  */
@@ -28,9 +28,9 @@ typedef void(^DDQDownloadError)(NSError *error);
 /**
  初始化方法
 
- @return 一个本类的单例
+ @return 一个本类的实例
  */
-+ (instancetype)defaultManager;
++ (instancetype)downloadManager;
 
 /**
  开启一个任务
@@ -40,7 +40,7 @@ typedef void(^DDQDownloadError)(NSError *error);
  @param state 任务下载状态
  @param failure 网络原因造成的失败
  */
-- (void)manager_downloadWithURL:(NSString *)url Schedule:(void(^)(NSUInteger receivedSize, NSUInteger expectedSize, float schedule))schedule State:(void (^)(DDQDownloadStates state))state Failure:(void(^)(NSError *downloadError))failure;
+- (void)manager_downloadWithURL:(NSString *)url Schedule:(DDQDownloadSchedule)schedule State:(void (^)(DDQDownloadStates state))state Failure:(void(^)(NSError *downloadError))failure;
 
 /**
  处理当前任务的状态
@@ -65,5 +65,13 @@ typedef void(^DDQDownloadError)(NSError *error);
  @return 完成的百分比
  */
 - (float)manager_downloadTaskRateWithURL:(NSString *)url;
+
+/**
+ 任务的下载速率
+
+ @param url 任务的URL
+ @param speed 下载的速率
+ */
+- (void)manager_downloadSpeedWithURL:(NSString *)url Speed:(DDQDownloadSpeed)speed;
 
 @end

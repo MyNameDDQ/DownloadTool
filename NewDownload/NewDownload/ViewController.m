@@ -14,6 +14,9 @@
 #define kFirstVideoUrl @"http://120.25.226.186:32812/resources/videos/minion_01.mp4"
 #define kSecondVideoUrl @"http://dlsw.baidu.com/sw-search-sp/soft/9d/25765/sogou_mac_32c_V3.2.0.1437101586.dmg"
 
+#define kThirdVideoUrl @"http://app.qixingshidai.com/Public/Uploads/gh/2017-05-05/590c2f922b110.pdf"
+#define kFourthVideoUrl @"http://app.qixingshidai.com/Public/Uploads/gh/2017-05-05/590c2ec7e6740.pdf"
+
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, strong) NSArray *vc_sourceArray;
@@ -34,7 +37,7 @@ NSString *const identifier = @"VCCellID";
     [self.vc_tableView registerNib:[UINib nibWithNibName:@"DDQDownloadCell" bundle:nil] forCellReuseIdentifier:identifier];
     
     //controller initialize
-    self.vc_sourceArray = @[kFirstVideoUrl, kSecondVideoUrl];
+    self.vc_sourceArray = @[kFirstVideoUrl, kSecondVideoUrl, kThirdVideoUrl, kFourthVideoUrl];
 }
 
 #pragma mark - DataSource & Delegate
@@ -53,7 +56,7 @@ NSString *const identifier = @"VCCellID";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    return 80.0;
+    return 100.0;
 }
 
 @end
