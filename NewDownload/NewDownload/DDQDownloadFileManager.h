@@ -69,6 +69,13 @@ typedef NSString *DDQFileManagerDataKey;
  */
 - (BOOL)file_deleteTaskFileWithUrl:(NSString *)url;
 
+/**
+ 保存的文件的总大小
+
+ @return 文件大小
+ */
+- (NSUInteger)file_downloadFileTotalSize;
+
 @end
 
 FOUNDATION_EXTERN DDQFileManagerDataKey const DDQFileManagerTaskSizeKey;

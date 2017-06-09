@@ -222,4 +222,18 @@ static DDQDownloadFileManager *manager = nil;
     return isOk;
 }
 
+- (NSUInteger)file_downloadFileTotalSize {
+    
+    NSError *error = nil;
+    NSArray *contentArray = [fileManager contentsOfDirectoryAtPath:downloadSavePath error:&error];
+    
+    unsigned long long fileTotalSize = 0;
+    for (NSString *path in contentArray) {
+        
+        NSDictionary *attrDic = [fileManager attributesOfItemAtPath:[NSString stringWithFormat:@"%@/%@", downloadSavePath, path] error:nil];
+        fileTotalSize += [attrDic fileSize];
+    }
+
+    return fileTotalSize;
+}
 @end

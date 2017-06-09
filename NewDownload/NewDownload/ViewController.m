@@ -17,6 +17,9 @@
 #define kThirdVideoUrl @"http://app.qixingshidai.com/Public/Uploads/gh/2017-05-05/590c2f922b110.pdf"
 #define kFourthVideoUrl @"http://app.qixingshidai.com/Public/Uploads/gh/2017-05-05/590c2ec7e6740.pdf"
 
+#define kFifthVideoUrl @"http://app.qixingshidai.com/Public/Uploads/video/A9huaxu.mp4"
+#define kSixthVideoUrl @"http://app.qixingshidai.com/Public/Uploads/video/xjaksms.mp4"
+
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource, DDQDownloadCellDelegate, UIDocumentInteractionControllerDelegate>
 
 @property (nonatomic, strong) NSArray *vc_sourceArray;
@@ -37,7 +40,10 @@ NSString *const identifier = @"VCCellID";
     [self.vc_tableView registerNib:[UINib nibWithNibName:@"DDQDownloadCell" bundle:nil] forCellReuseIdentifier:identifier];
     
     //controller initialize
-    self.vc_sourceArray = @[kFirstVideoUrl, kSecondVideoUrl, kThirdVideoUrl, kFourthVideoUrl];
+    self.vc_sourceArray = @[kFirstVideoUrl, kSecondVideoUrl, kThirdVideoUrl, kFourthVideoUrl, kFifthVideoUrl, kSixthVideoUrl];
+    
+    NSUInteger size = [[DDQDownloadFileManager defaultFileManager] file_downloadFileTotalSize];
+    NSLog(@"%ld", size);
 }
 
 #pragma mark - DataSource & Delegate

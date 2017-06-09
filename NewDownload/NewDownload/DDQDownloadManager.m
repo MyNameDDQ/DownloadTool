@@ -120,6 +120,10 @@ static NSMutableDictionary *managerTaskDic = nil;
     NSURLSessionDataTask *data_task = [default_session dataTaskWithRequest:url_request];
     [data_task resume];
     
+    //不为空就提示开始运行啦
+    if (!state) return;
+    state(kDownloadStart);
+    
     //任务操作类
     DDQDownloadOperation *operation = [[DDQDownloadOperation alloc] init];
     operation.download_address = [self.downloadFileManager file_getTaskFilePathWithUrl:url];
